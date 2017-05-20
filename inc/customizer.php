@@ -12,16 +12,6 @@
  */
 class IndependentPublisher_Customize {
 
-	private static $default_colors = array(
-			'text_color' => '#000000',
-			'comment_form_background_color' => '#F1F1F1',
-			'comment_form_text_color' => '#000000',
-			'link_color' => '#57ad68',
-			'header_text_color' => '#333332',
-			'primary_meta_text_color' => '#929292',
-			'secondary_meta_text_color' => '#b3b3b1'
-	);
-
 	public static function register( $wp_customize ) {
 
 		$wp_customize->add_section(
@@ -300,24 +290,6 @@ class IndependentPublisher_Customize {
 				'type'     => 'checkbox',
 			)
 		);
-		
-		// Show comment author's full name in reply-link
-		$wp_customize->add_setting(
-			'independent_publisher_general_options[show_full_name_comment_reply_to]', array(
-				'default'           => false,
-				'type'              => 'option',
-				'capability'        => 'edit_theme_options',
-				'sanitize_callback' => 'independent_publisher_sanitize_checkbox',
-			)
-		);
-		$wp_customize->add_control(
-			'show_full_name_comment_reply_to', array(
-				'settings' => 'independent_publisher_general_options[show_full_name_comment_reply_to]',
-				'label'    => __( 'Show Full Name in Comment Reply-to', 'independent-publisher' ),
-				'section'  => 'independent_publisher_general_options',
-				'type'     => 'checkbox',
-			)
-		);
 
 		// Comments Call to Action text
 		$wp_customize->add_setting(
@@ -343,37 +315,37 @@ class IndependentPublisher_Customize {
 
 		$colors[] = array(
 			'slug'    => 'text_color',
-			'default' => self::$default_colors['text_color'],
+			'default' => '#000000',
 			'label'   => __( 'Text Color', 'independent-publisher' )
 		);
 		$colors[] = array(
 			'slug'    => 'comment_form_background_color',
-			'default' => self::$default_colors['comment_form_background_color'],
+			'default' => '#F1F1F1',
 			'label'   => __( 'Comment Form Background Color', 'independent-publisher' )
 		);
 		$colors[] = array(
 			'slug'    => 'comment_form_text_color',
-			'default' => self::$default_colors['comment_form_text_color'],
+			'default' => '#000000',
 			'label'   => __( 'Comment Form Text Color', 'independent-publisher' )
 		);
 		$colors[] = array(
 			'slug'    => 'link_color',
-			'default' => self::$default_colors['link_color'],
+			'default' => '#57ad68',
 			'label'   => __( 'Link Color', 'independent-publisher' )
 		);
 		$colors[] = array(
 			'slug'    => 'header_text_color',
-			'default' => self::$default_colors['header_text_color'],
+			'default' => '#333332',
 			'label'   => __( 'Title and Header Text Color', 'independent-publisher' )
 		);
 		$colors[] = array(
 			'slug'    => 'primary_meta_text_color',
-			'default' => self::$default_colors['primary_meta_text_color'],
+			'default' => '#929292',
 			'label'   => __( 'Primary Meta Text Color', 'independent-publisher' )
 		);
 		$colors[] = array(
 			'slug'    => 'secondary_meta_text_color',
-			'default' => self::$default_colors['secondary_meta_text_color'],
+			'default' => '#b3b3b1',
 			'label'   => __( 'Secondary Meta Text Color', 'independent-publisher' )
 		);
 		foreach ( $colors as $color ) {
@@ -542,7 +514,8 @@ class IndependentPublisher_Customize {
 	 */
 	public static function generate_css( $selector, $style, $mod_name, $prefix = '', $postfix = '', $echo = true, $format = '%1$s { %2$s:%3$s; }' ) {
 		$return            = '';
-		$mod               = get_theme_mod( $mod_name, self::$default_colors[$mod_name] );
+		$default_mod_value = ( $mod_name === 'text_color' ? '#000000' : '' ); // Fixes bug where post excerpts use customized link color when text color has not been set.
+		$mod               = get_theme_mod( $mod_name, $default_mod_value );
 		if ( !empty( $mod ) ) {
 			$return = sprintf(
 				$format . "\n",
